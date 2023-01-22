@@ -1,0 +1,80 @@
+from .config import Config
+from colorama import Fore, init, Style
+import pymysql
+
+class dbUtils():
+    def __init__(self):
+        # Connect to database
+        self.connection = pymysql.connect(host=Config().db_host, user=Config().db_user, password=Config().db_pass, db=Config().db_name)
+
+    # Function to create table if it doesn't exist
+    async def create_table(self):
+        print(f"{Fore.MAGENTA}>{Fore.WHITE} Database connected")
+        try:
+            # Create cursor
+            with self.connection.cursor() as cursor:
+
+                cursor.execute("SHOW TABLES")
+                tables = cursor.fetchall()
+                # check if the table already exists or not
+                if ('chats',) in tables:
+                    print(f"{Fore.MAGENTA}>{Fore.WHITE} Table already exists, skipping creation...")
+                else:
+                    # Create the table
+                    sql = "CREATE TABLE IF NOT EXISTS chats (id INT AUTO_INCREMENT PRIMARY KEY, discord_user_id BIGINT NOT NULL, context_id VARCHAR(255) NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, expires_at TIMESTAMP DEFAULT DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 15 MINUTE));"
+                    cursor.execute(sql)
+                    print(f"{Fore.MAGENTA}>{Fore.WHITE} Table created")
+
+            # Save changes
+            self.connection.commit()
+
+        except Exception as e:
+            # If something goes wrong, print error message
+            print(f"{Fore.RED}>{Fore.WHITE} Error creating Table: {e}")
+            self.connection.rollback()
+
+    # Function to insert data into table
+    async def add_user(self, discord_user_id: int, context_id: str):
+        try:
+            # Create cursor
+            with self.connection.cursor() as cursor:
+                # Insert data
+                sql = "INSERT INTO chats (discord_user_id, context_id) VALUES (%s, %s)"
+                cursor.execute(sql, (discord_user_id, context_id))
+
+            # Make sure data is committed to the database
+            self.connection.commit()
+        except Exception as e:
+            print(f"{Fore.RED}Error: {e}")
+            sys.exit(1)
+
+    # Function to check if user has a context id
+    async def check_user(self, discord_user_id: int):
+        try:
+            # Create cursor
+            with self.connection.cursor() as cursor:
+                # Insert data
+                sql = "SELECT context_id FROM chats WHERE discord_user_id = %s"
+                cursor.execute(sql, (discord_user_id))
+                result = cursor.fetchone()
+                if result is None:
+                    return False
+                else:
+                    return result[0]
+        except Exception as e:
+            print(f"{Fore.RED}Error: {e}")
+            sys.exit(1)
+
+    # Function to get total users in database
+    async def get_total_users(self):
+        try:
+            # Create cursor
+            with self.connection.cursor() as cursor:
+                # Insert data
+                sql = "SELECT COUNT(*) FROM chats"
+                cursor.execute(sql)
+                result = cursor.fetchone()
+                return result[0]
+        except Exception as e:
+            print(f"{Fore.RED}Error: {e}")
+            sys.exit(1)

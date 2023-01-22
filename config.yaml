@@ -4,11 +4,13 @@
 # Discord Bot Token
 bot_token: ""
 # Discord Bot Prefix
-bot_prefix: ""
+bot_prefix: "!"
 # Discord Bot Owner ID
 bot_owner_id: ""
-# Discord Bot Allowed usage role ID (only people with this role can send a prompt)
+# Discord Bot Allowed usage role ID
 bot_allowed_role: ""
+# Max number of simultaneously connected users (default: 3):
+max_chats: ""
 
 # -- #
 # End Discord Region
@@ -20,8 +22,23 @@ bot_allowed_role: ""
 openai_key: ""
 # AI Engine (default: "text-davinci-003")
 ai_engine: ""
-# AI Temperature (0-1) (default: 0.7)
+# AI Temperature (0-1) (Default: 0.7)
 temperature: ""
 
 # -- #
 # End OpenAI Region
+
+# -- #
+# Start Database Region
+
+# Database host:
+db_host: ""
+# Database Name:
+db_name: ""
+# Database User:
+db_user: ""
+# Database Pass:
+db_pass: ""
+
+# -- #
+# End Database Region

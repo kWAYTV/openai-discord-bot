@@ -1,6 +1,7 @@
 # Imports
-import discord, os, time, requests, json, logging, asyncio, httpx
+import discord, os, time, requests, json, logging, asyncio, httpx, pymysql
 from src.util.config import Config
+from src.util.database import dbUtils
 from discord.ext.commands import CommandNotFound
 from discord.ext import commands, tasks
 from discord import app_commands, SelectOption
@@ -24,10 +25,11 @@ class Bot(commands.Bot):
                 await self.load_extension(f"src.cogs.{filename[:-3]}")
 
 # Define the clients
+connection = pymysql.connect(host=Config().db_host, user=Config().db_user, password=Config().db_pass, db=Config().db_name)
 bot = Bot(command_prefix=Config().bot_prefix, help_command=None, intents=discord.Intents.all())
 
 # Dynamic activity
-status = cycle(["yourstatus1", "yourstatus2", "yourstatus3"])
+status = cycle(["discord.gg/kws", "kwayservices.top", "discord.gg/fml"])
 @tasks.loop(seconds=30)
 async def changeStatus():
     await bot.change_presence(status=discord.Status.do_not_disturb, activity=discord.Activity(type=discord.ActivityType.watching, name=next(status)))
@@ -37,6 +39,8 @@ async def changeStatus():
 async def on_ready():
     clear()
     print(f"{Fore.MAGENTA}> {Fore.RESET}Logged in as {bot.user.name}#{bot.user.discriminator}.")
+
+    await dbUtils().create_table()
 
     logging.basicConfig(handlers=[logging.FileHandler('openai-dc.log', 'a+', 'utf-8')], level=logging.INFO, format='%(asctime)s: %(message)s')
 
