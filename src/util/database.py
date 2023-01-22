@@ -93,3 +93,17 @@ class dbUtils():
         except Exception as e:
             print(f"{Fore.RED}Error: {e}")
             sys.exit(1)
+
+    # Function to get the discord_ids in the database
+    async def get_discord_ids(self):
+        try:
+            # Create cursor
+            with self.connection.cursor() as cursor:
+                # Insert data
+                sql = "SELECT discord_user_id FROM chats"
+                cursor.execute(sql)
+                result = cursor.fetchall()
+                return result
+        except Exception as e:
+            print(f"{Fore.RED}Error: {e}")
+            sys.exit(1)

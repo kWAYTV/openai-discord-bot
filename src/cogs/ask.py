@@ -74,8 +74,7 @@ class PromptCmd(commands.Cog):
 
         except Exception as e:
             embed = discord.Embed(title="ChatGPT - Error", description="The bot encountered an error:",color=0xb34760)
-            embed.add_field(name="Report this to the Staff", value=f"`Report the error below to the staff team`", inline=False)
-            embed.add_field(name="Error", value=f"```{str(e)}```", inline=False)
+            embed.add_field(name="Report this to the Staff", value=f"`We couldn't get a prompt, report it to the staff, please.`", inline=False)
             embed.set_footer(text="ChatGPT Discord Bot")
             embed.set_image(url="https://i.imgur.com/98NAOch.gif")
             embed.timestamp = datetime.utcnow()
