@@ -34,6 +34,11 @@ status = cycle(["discord.gg/kws", "kwayservices.top", "discord.gg/fml"])
 async def changeStatus():
     await bot.change_presence(status=discord.Status.do_not_disturb, activity=discord.Activity(type=discord.ActivityType.watching, name=next(status)))
 
+# Delete expired users
+@tasks.loop(seconds=60)
+async def deleteExpiredUsers():
+    await dbUtils().deleteExpiredUsers()
+
 # On Ready Event
 @bot.event
 async def on_ready():
@@ -45,6 +50,7 @@ async def on_ready():
     logging.basicConfig(handlers=[logging.FileHandler('openai-dc.log', 'a+', 'utf-8')], level=logging.INFO, format='%(asctime)s: %(message)s')
 
     changeStatus.start()
+    deleteExpiredUsers.start()
 
 # Sync slash commands
 @bot.command()

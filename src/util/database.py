@@ -107,3 +107,19 @@ class dbUtils():
         except Exception as e:
             print(f"{Fore.RED}Error: {e}")
             sys.exit(1)
+
+    # Function to delete expired users
+    async def deleteExpiredUsers(self):
+        try:
+            # Create cursor
+            with self.connection.cursor() as cursor:
+                # Insert data
+                sql = "DELETE FROM chats WHERE expires_at < NOW()"
+                cursor.execute(sql)
+                
+            # Make sure data is committed to the database
+            self.connection.commit()
+        except Exception as e:
+            print(f"{Fore.RED}Error: {e}")
+            self.connection.rollback()
+            sys.exit(1)
