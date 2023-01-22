@@ -52,6 +52,26 @@ async def on_ready():
     changeStatus.start()
     deleteExpiredUsers.start()
 
+# On message event
+@bot.event
+async def on_message(message):
+    if message.author.bot:
+        return
+
+    await bot.process_commands(message)
+
+    # If they mention the bot
+    if bot.user.mention in message.content:
+        embed = discord.Embed(title="OpenAI Discord Bot", description="This bot is made by kWAY#1701.", color=0xc29ed2)
+        embed.add_field(name="Usage", value=f"`Type / to see a list of commands`", inline=False)
+        embed.add_field(name="Support Server", value=f"[Click here](https://discord.gg/kws)", inline=False)
+        embed.add_field(name="Website", value=f"[Click here](https://kwayservices.top)", inline=False)
+        embed.set_image(url="https://i.imgur.com/98NAOch.gif")
+        embed.set_footer(text="ChatGPT")
+        embed.timestamp = datetime.utcnow()
+        await message.channel.send(embed=embed)
+
+
 # Sync slash commands
 @bot.command()
 async def sync(ctx):
