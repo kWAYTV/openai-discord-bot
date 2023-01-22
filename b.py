@@ -71,7 +71,6 @@ async def on_message(message):
         embed.timestamp = datetime.utcnow()
         await message.channel.send(embed=embed)
 
-
 # Sync slash commands
 @bot.command()
 async def sync(ctx):

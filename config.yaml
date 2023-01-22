@@ -7,7 +7,7 @@ bot_token: ""
 bot_prefix: "!"
 # Discord Bot Owner ID
 bot_owner_id: ""
-# Max number of simultaneously connected users (default: 3):
+# Max number of simultaneously connected users (default: 5):
 max_chats: ""
 
 # -- #
