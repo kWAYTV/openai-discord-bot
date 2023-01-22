@@ -1,0 +1,27 @@
+# -- #
+# Discord Region
+
+# Discord Bot Token
+bot_token: ""
+# Discord Bot Prefix
+bot_prefix: ""
+# Discord Bot Owner ID
+bot_owner_id: ""
+# Discord Bot Allowed usage role ID (only people with this role can send a prompt)
+bot_allowed_role: ""
+
+# -- #
+# End Discord Region
+
+# -- #
+# OpenAI Region
+
+# OpenAI API Key
+openai_key: ""
+# AI Engine (default: "text-davinci-003")
+ai_engine: ""
+# AI Temperature (0-1) (default: 0.7)
+temperature: ""
+
+# -- #
+# End OpenAI Region
