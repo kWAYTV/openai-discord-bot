@@ -48,6 +48,21 @@ class dbUtils():
             print(f"{Fore.RED}Error: {e}")
             sys.exit(1)
 
+    # Function to delete user from table
+    async def delete_user(self, discord_user_id: int):
+        try:
+            # Create cursor
+            with self.connection.cursor() as cursor:
+                # Insert data
+                sql = "DELETE FROM chats WHERE discord_user_id = %s"
+                cursor.execute(sql, (discord_user_id))
+
+            # Make sure data is committed to the database
+            self.connection.commit()
+        except Exception as e:
+            print(f"{Fore.RED}Error: {e}")
+            sys.exit(1)
+
     # Function to check if user has a context id
     async def check_user(self, discord_user_id: int):
         try:
