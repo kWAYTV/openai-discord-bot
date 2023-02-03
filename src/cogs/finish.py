@@ -1,4 +1,4 @@
-import discord
+import discord, time
 from src.util.config import Config
 from src.util.chatgpt import AiUtil
 from src.util.database import dbUtils
@@ -22,22 +22,26 @@ class FinishConvoCmd(commands.Cog):
                 await dbUtils().delete_user(discord_user_id=interaction.user.id)
                 channel = interaction.channel
                 embed = discord.Embed(title="ChatGPT - Finished", description="Conversation finished successfully", color=0xc9b479)
-                embed.add_field(name="Conversation Finished", value=f"```You can use /start to start a conversation anytime again.```", inline=False)
+                embed.add_field(name="Conversation Finished", value=f"You can use <#{Config().panel_channel_id}> to start a conversation anytime again.", inline=False)
                 embed.add_field(name="Deleting Channel", value="`Your channel will be deleted in 5 seconds.`", inline=False)
                 embed.set_footer(text="ChatGPT Discord Bot")
                 embed.set_image(url="https://i.imgur.com/98NAOch.gif")
                 embed.timestamp = datetime.utcnow()
-                await interaction.followup.send(embed=embed, ephemeral=True)
+                await interaction.followup.send(embed=embed)
                 time.sleep(5)
                 await channel.delete()
                 return
             else:
                 embed = discord.Embed(title="ChatGPT - Error", description="Conversation not started",color=0xb34760)
-                embed.add_field(name="Error", value=f"```Sorry, but you don't have a conversation with ChatGPT. Please use /start to start a conversation.```", inline=False)
+                embed.add_field(name="Error", value=f"Sorry, but you don't have a conversation with ChatGPT. Please use <#{Config().panel_channel_id}> to start a conversation.", inline=False)
                 embed.set_footer(text="ChatGPT Discord Bot")
                 embed.set_image(url="https://i.imgur.com/98NAOch.gif")
                 embed.timestamp = datetime.utcnow()
-                await interaction.followup.send(embed=embed, ephemeral=True)
+                await interaction.followup.send(embed=embed)
+                nChannel = interaction.channel.name
+                nUser = "chatgpt-"+str(interaction.user.id)
+                if not nChannel == nUser:
+                    await interaction.channel.delete()
                 return
         
         except Exception as e:

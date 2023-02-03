@@ -12,4 +12,4 @@ class MsgUtil():
                 chunk = string[:chunk_size]# Get the first chunk_size characters from the string
                 chunks.append(chunk)# Add the chunk to the list of chunks
                 string = string[chunk_size:]# Remove the chunk from the original string
-            return chunks# Return the list of chunks
+            return chunks # Return the list of chunks

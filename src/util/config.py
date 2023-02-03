@@ -9,9 +9,11 @@ class Config():
             self.bot_token = self.config["bot_token"]
             self.bot_prefix = self.config["bot_prefix"]
             self.bot_owner = int(self.config["bot_owner_id"])
+            self.bot_guild_id = int(self.config["bot_guild_id"])
             self.max_chats = int(self.config["max_chats"])
             self.chat_category_id = int(self.config["chat_category_id"])
             self.member_role_id = int(self.config["member_role_id"])
+            self.panel_channel_id = int(self.config["panel_channel_id"])
             self.openai_key = self.config["openai_key"]
             self.ai_engine = self.config["ai_engine"]
             self.temperature = float(self.config["temperature"])

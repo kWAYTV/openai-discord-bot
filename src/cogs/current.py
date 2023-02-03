@@ -27,14 +27,14 @@ class CurrentUsersCmd(commands.Cog):
                 embed.set_footer(text="ChatGPT Discord Bot")
                 embed.set_image(url="https://i.imgur.com/98NAOch.gif")
                 embed.timestamp = datetime.utcnow()
-                await interaction.followup.send(embed=embed, ephemeral=True)
             else:
                 embed = discord.Embed(title="ChatGPT - Current Users", description="Current users in queue", color=0xc9b479)
                 embed.add_field(name="User", value=f"```No users in queue```", inline=False)
                 embed.set_footer(text="ChatGPT Discord Bot")
                 embed.set_image(url="https://i.imgur.com/98NAOch.gif")
                 embed.timestamp = datetime.utcnow()
-                await interaction.followup.send(embed=embed, ephemeral=True)
+            
+            await interaction.followup.send(embed=embed, ephemeral=True)
 
         except Exception as e:
             print(e)

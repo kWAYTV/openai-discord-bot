@@ -1,28 +1,24 @@
 import discord
-import openai
+from revChatGPT.Official import AsyncChatbot
 import json
 from .config import Config
+from .message import MsgUtil
 
 class AiUtil():
 
     def __init__(self):
-        self.openai = openai
-        self.openai.api_key = Config().openai_key
+        self.chatbot = AsyncChatbot(api_key=Config().openai_key)
 
-    async def get_prompt(self, prompt: str, prev: str = None):
+    async def get_response(self, prompt: str, new_conv: bool = False, conv_id: str = None):
 
-        if prev:
-            full_prompt = f"Based off this conversation i had with you: {prev}, generate me a prompt for: {prompt}"
-        else:
-            full_prompt = f"Generate me a prompt for: {prompt}"
+        try:
+        
+            if new_conv:
+                self.chatbot.reset()
+            
+            response = await self.chatbot.ask(prompt, temperature = 1)
+            return response
 
-        response = self.openai.Completion.create(
-            engine=Config().ai_engine,
-            prompt=full_prompt,
-            temperature=Config().temperature,
-            max_tokens=2048,
-            top_p=1,
-            frequency_penalty=0.0,
-            presence_penalty=0.0,
-        )
-        return response
+        except Exception as e:
+            print(f"{Fore.RED}>{Fore.WHITE} Error getting prompt: {e}")
+            return

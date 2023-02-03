@@ -4,15 +4,19 @@
 # Discord Bot Token
 bot_token: ""
 # Discord Bot Prefix
-bot_prefix: "!"
+bot_prefix: ""
 # Discord Bot Owner ID
 bot_owner_id: ""
+# Discord Bot Guild ID
+bot_guild_id: ""
 # Max number of simultaneously connected users:
 max_chats: ""
 # Chat category
 chat_category_id: ""
 # Discord normal member role:
 member_role_id: ""
+# Panel channel id
+panel_channel_id: ""
 
 # -- #
 # End Discord Region
@@ -24,7 +28,7 @@ member_role_id: ""
 openai_key: ""
 # AI Engine (default: "text-davinci-003")
 ai_engine: ""
-# AI Temperature (0-1)
+# AI Temperature (0-1) (default 1)
 temperature: ""
 
 # -- #

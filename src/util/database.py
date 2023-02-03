@@ -9,7 +9,7 @@ class dbUtils():
 
     # Function to create table if it doesn't exist
     async def create_table(self):
-        print(f"{Fore.MAGENTA}>{Fore.WHITE} Database connected")
+        print(f"{Fore.CYAN}>{Fore.WHITE} Database connected")
         try:
             # Create cursor
             with self.connection.cursor() as cursor:
@@ -21,9 +21,9 @@ class dbUtils():
                     print(f"{Fore.MAGENTA}>{Fore.WHITE} Table already exists, skipping creation...")
                 else:
                     # Create the table
-                    sql = "CREATE TABLE chats (id INT AUTO_INCREMENT PRIMARY KEY, discord_user_id BIGINT NOT NULL, context_id VARCHAR(255) NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, expires_at TIMESTAMP DEFAULT DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 15 MINUTE));"
+                    sql = "CREATE TABLE chats (id INT AUTO_INCREMENT PRIMARY KEY, discord_user_id BIGINT NOT NULL, channel_id BIGINT, context_id VARCHAR(255) NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, expires_at TIMESTAMP DEFAULT DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 15 MINUTE));"
                     cursor.execute(sql)
-                    print(f"{Fore.MAGENTA}>{Fore.WHITE} Table created")
+                    print(f"{Fore.GREEN}>{Fore.WHITE} Table created")
 
             # Save changes
             self.connection.commit()
@@ -34,19 +34,19 @@ class dbUtils():
             self.connection.rollback()
 
     # Function to insert data into table
-    async def add_user(self, discord_user_id: int, context_id: str):
+    async def add_user(self, discord_user_id: int, channel_id: int, context_id: str):
         try:
             # Create cursor
             with self.connection.cursor() as cursor:
                 # Insert data
-                sql = "INSERT INTO chats (discord_user_id, context_id) VALUES (%s, %s)"
-                cursor.execute(sql, (discord_user_id, context_id))
+                sql = "INSERT INTO chats (discord_user_id, channel_id, context_id) VALUES (%s, %s, %s)"
+                cursor.execute(sql, (discord_user_id, channel_id, context_id))
 
             # Make sure data is committed to the database
             self.connection.commit()
         except Exception as e:
             print(f"{Fore.RED}Error: {e}")
-            sys.exit(1)
+            self.connection.rollback()
 
     # Function to delete user from table
     async def delete_user(self, discord_user_id: int):
@@ -61,7 +61,7 @@ class dbUtils():
             self.connection.commit()
         except Exception as e:
             print(f"{Fore.RED}Error: {e}")
-            sys.exit(1)
+            self.connection.rollback()
 
     # Function to check if user has a context id
     async def check_user(self, discord_user_id: int):
@@ -78,6 +78,7 @@ class dbUtils():
                     return False
         except Exception as e:
             print(f"{Fore.RED}Error: {e}")
+            self.connection.rollback()
 
     # Function to get total users in database
     async def get_total_users(self):
@@ -91,7 +92,7 @@ class dbUtils():
                 return result[0]
         except Exception as e:
             print(f"{Fore.RED}Error: {e}")
-            sys.exit(1)
+            self.connection.rollback()
 
     # Function to get the discord_ids in the database
     async def get_discord_ids(self):
@@ -105,10 +106,11 @@ class dbUtils():
                 return result
         except Exception as e:
             print(f"{Fore.RED}Error: {e}")
-            sys.exit(1)
+            self.connection.rollback()
 
     # Function to delete expired users
     async def deleteExpiredUsers(self):
+
         try:
             # Create cursor
             with self.connection.cursor() as cursor:
@@ -121,4 +123,20 @@ class dbUtils():
         except Exception as e:
             print(f"{Fore.RED}Error: {e}")
             self.connection.rollback()
-            sys.exit(1)
+
+    # Function to get expired channels
+    async def getExpiredChannels(self):
+        try:
+            # Create cursor
+            with self.connection.cursor() as cursor:
+                # Insert data
+                sql = "SELECT channel_id FROM chats WHERE expires_at < NOW()"
+                cursor.execute(sql)
+                fetch = cursor.fetchall()
+                result = []
+                for channel in fetch:
+                    result.append(channel[0])
+                return result
+        except Exception as e:
+            print(f"{Fore.RED}Error: {e}")
+            self.connection.rollback()

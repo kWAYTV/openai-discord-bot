@@ -26,14 +26,18 @@ class OpenChat(View):
         # Create a new text channel
         guild = interaction.guild
         user = interaction.user
-        channel_name = f"{user.name}-chatgpt"
+        user_id = interaction.user.id
+        channel_name = f"chatgpt-{user_id}"
 
-        # if there is already a channel with that name, put a number at the end
+        # Check if the user already has a channel
         if discord.utils.get(guild.channels, name=channel_name):
-            i = 1
-            while discord.utils.get(guild.channels, name=f"{channel_name}-{i}"):
-                i += 1
-            channel_name = f"{channel_name}-{i}"
+            channel = discord.utils.get(guild.channels, name=channel_name)
+            try:
+                await interaction.response.send_message(f"You already have a channel! Please use {channel.mention} properly.", ephemeral=True)
+                return
+            except:
+                await interaction.response.send_message(f"You already have a channel and i couldn't find it! Please contact an admin.", ephemeral=True)
+                return
 
         category = guild.get_channel(Config().chat_category_id)
         channel = await category.create_text_channel(channel_name)
@@ -47,4 +51,4 @@ class OpenChat(View):
 
         # Switch to the new channel
         await interaction.response.send_message(f"Switching to {channel.mention}", ephemeral=True)
-        await channel.send(f"Hey! {user.mention} Welcome to your ChatGPT channel!", view=ChatPrompt())
+        await channel.send(f"Hey! {user.mention} Welcome to your ChatGPT channel! Press the `Start Asking!` button and then follow the instructions.", view=ChatPrompt())
