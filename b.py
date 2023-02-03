@@ -2,6 +2,7 @@
 import discord, os, time, requests, json, logging, asyncio, httpx, pymysql
 from src.util.config import Config
 from src.util.database import dbUtils
+from src.view.openChatView import OpenChat
 from discord.ext.commands import CommandNotFound
 from discord.ext import commands, tasks
 from discord import app_commands, SelectOption
@@ -43,14 +44,17 @@ async def deleteExpiredUsers():
 @bot.event
 async def on_ready():
     clear()
-    print(f"{Fore.MAGENTA}> {Fore.RESET}Logged in as {bot.user.name}#{bot.user.discriminator}.")
-
-    await dbUtils().create_table()
-
+    print(f"{Fore.MAGENTA}>{Fore.WHITE} Starting the bot...")
     logging.basicConfig(handlers=[logging.FileHandler('openai-dc.log', 'a+', 'utf-8')], level=logging.INFO, format='%(asctime)s: %(message)s')
 
+    await dbUtils().create_table()
+    await bot.tree.sync()
     changeStatus.start()
     deleteExpiredUsers.start()
+    bot.add_view(OpenChat())
+
+    clear()
+    print(f"{Fore.MAGENTA}> {Fore.RESET}Logged in as {bot.user.name}#{bot.user.discriminator}.")
 
 # On message event
 @bot.event

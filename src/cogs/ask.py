@@ -15,23 +15,32 @@ class PromptCmd(commands.Cog):
     async def prompt_command(self, interaction: discord.Interaction, prompt: str):
         await interaction.response.defer()
 
-        #if Config().bot_allowed_role in [role.id for role in interaction.user.roles]:
         try:
 
             context_id = await dbUtils().check_user(discord_user_id=interaction.user.id)
-
             if not context_id:
                 embed = discord.Embed(title="ChatGPT - Error", description="User Data Issue",color=0xb34760)
-                embed.add_field(name="Error", value=f"```You need to start a conversation with ChatGPT first. Use `/start` to start a conversation.```", inline=False)
+                embed.add_field(name="Error", value=f"```You need to start a conversation with ChatGPT first. Go to the channel where the panel is to start.```", inline=False)
                 embed.set_footer(text="ChatGPT Discord Bot")
                 embed.set_image(url="https://i.imgur.com/98NAOch.gif")
                 embed.timestamp = datetime.utcnow()
                 await interaction.followup.send(embed=embed, ephemeral=True)
                 return
             else:
+                user_name = interaction.user
+                username = user_name.name.split("#")[0].lower()
+                channel_name = interaction.channel.name
+                if not channel_name == f"{username}-chatgpt":
+                    embed = discord.Embed(title="ChatGPT - Error", description="Wrong Channel",color=0xb34760)
+                    embed.add_field(name="Error", value=f"```You need to use this command in your ChatGPT channel.```", inline=False)
+                    embed.set_footer(text="ChatGPT Discord Bot")
+                    embed.set_image(url="https://i.imgur.com/98NAOch.gif")
+                    embed.timestamp = datetime.utcnow()
+                    await interaction.followup.send(embed=embed, ephemeral=True)
+                    return
                 response = await AiUtil().get_prompt(prompt)
                 response = response.choices[0].text
-
+        
             if "```" in response:
                 parts = response.split("```")
                 await interaction.followup.send(parts[0], ephemeral=True)
@@ -71,7 +80,7 @@ class PromptCmd(commands.Cog):
                 embed.set_image(url="https://i.imgur.com/98NAOch.gif")
                 embed.timestamp = datetime.utcnow()
                 await interaction.followup.send(embed=embed, ephemeral=True)
-
+        
         except Exception as e:
             embed = discord.Embed(title="ChatGPT - Error", description="The bot encountered an error:",color=0xb34760)
             embed.add_field(name="Report this to the Staff", value=f"`We couldn't get a prompt, report it to the staff, please.`", inline=False)

@@ -21,7 +21,7 @@ class dbUtils():
                     print(f"{Fore.MAGENTA}>{Fore.WHITE} Table already exists, skipping creation...")
                 else:
                     # Create the table
-                    sql = "CREATE TABLE IF NOT EXISTS chats (id INT AUTO_INCREMENT PRIMARY KEY, discord_user_id BIGINT NOT NULL, context_id VARCHAR(255) NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, expires_at TIMESTAMP DEFAULT DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 15 MINUTE));"
+                    sql = "CREATE TABLE chats (id INT AUTO_INCREMENT PRIMARY KEY, discord_user_id BIGINT NOT NULL, context_id VARCHAR(255) NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, expires_at TIMESTAMP DEFAULT DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 15 MINUTE));"
                     cursor.execute(sql)
                     print(f"{Fore.MAGENTA}>{Fore.WHITE} Table created")
 
@@ -72,13 +72,12 @@ class dbUtils():
                 sql = "SELECT context_id FROM chats WHERE discord_user_id = %s"
                 cursor.execute(sql, (discord_user_id))
                 result = cursor.fetchone()
-                if result is None:
-                    return False
-                else:
+                if result is not None:
                     return result[0]
+                else:
+                    return False
         except Exception as e:
             print(f"{Fore.RED}Error: {e}")
-            sys.exit(1)
 
     # Function to get total users in database
     async def get_total_users(self):

@@ -7,8 +7,12 @@ bot_token: ""
 bot_prefix: "!"
 # Discord Bot Owner ID
 bot_owner_id: ""
-# Max number of simultaneously connected users (default: 5):
+# Max number of simultaneously connected users:
 max_chats: ""
+# Chat category
+chat_category_id: ""
+# Discord normal member role:
+member_role_id: ""
 
 # -- #
 # End Discord Region
@@ -20,7 +24,7 @@ max_chats: ""
 openai_key: ""
 # AI Engine (default: "text-davinci-003")
 ai_engine: ""
-# AI Temperature (0-1) (Default: 0.7)
+# AI Temperature (0-1)
 temperature: ""
 
 # -- #

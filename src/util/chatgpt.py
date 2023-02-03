@@ -9,10 +9,16 @@ class AiUtil():
         self.openai = openai
         self.openai.api_key = Config().openai_key
 
-    async def get_prompt(self, prompt: str):
+    async def get_prompt(self, prompt: str, prev: str = None):
+
+        if prev:
+            full_prompt = f"Based off this conversation i had with you: {prev}, generate me a prompt for: {prompt}"
+        else:
+            full_prompt = f"Generate me a prompt for: {prompt}"
+
         response = self.openai.Completion.create(
             engine=Config().ai_engine,
-            prompt=f"Hey give me a response for this: {prompt}",
+            prompt=full_prompt,
             temperature=Config().temperature,
             max_tokens=2048,
             top_p=1,

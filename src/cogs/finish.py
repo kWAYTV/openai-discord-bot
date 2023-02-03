@@ -20,12 +20,16 @@ class FinishConvoCmd(commands.Cog):
             response = await dbUtils().check_user(discord_user_id=interaction.user.id)
             if response:
                 await dbUtils().delete_user(discord_user_id=interaction.user.id)
+                channel = interaction.channel
                 embed = discord.Embed(title="ChatGPT - Finished", description="Conversation finished successfully", color=0xc9b479)
                 embed.add_field(name="Conversation Finished", value=f"```You can use /start to start a conversation anytime again.```", inline=False)
+                embed.add_field(name="Deleting Channel", value="`Your channel will be deleted in 5 seconds.`", inline=False)
                 embed.set_footer(text="ChatGPT Discord Bot")
                 embed.set_image(url="https://i.imgur.com/98NAOch.gif")
                 embed.timestamp = datetime.utcnow()
                 await interaction.followup.send(embed=embed, ephemeral=True)
+                time.sleep(5)
+                await channel.delete()
                 return
             else:
                 embed = discord.Embed(title="ChatGPT - Error", description="Conversation not started",color=0xb34760)
