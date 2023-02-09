@@ -12,6 +12,7 @@ class RevokeQueueCmd(commands.Cog):
         self.bot = bot
 
     @app_commands.command(name="revoke", description="Revoke someone from the queue.")
+    @app_commands.describe(user_id = "The user to revoke from the queue.")
     @app_commands.checks.has_permissions(administrator=True)
     async def revoke_command(self, interaction: discord.Interaction, user_id: discord.Member):
         await interaction.response.defer()

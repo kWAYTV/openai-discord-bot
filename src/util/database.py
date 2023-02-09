@@ -110,7 +110,6 @@ class dbUtils():
 
     # Function to delete expired users
     async def deleteExpiredUsers(self):
-
         try:
             # Create cursor
             with self.connection.cursor() as cursor:
